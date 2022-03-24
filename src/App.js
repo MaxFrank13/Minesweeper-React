@@ -3,14 +3,12 @@ import { useState, useEffect } from "react";
 import { nanoid } from "nanoid";
 import Cell from "./components/Cell";
 import Interface from "./components/Interface";
+import Header from './components/Header';
 
 export default function App() {
   const [grid, setGrid] = useState([]);
   const [play, setPlay] = useState(false);
   const [gameOver, setGameOver] = useState(false);
-
-  // NEXT TO DO:
-  // establish a 'game over' scenario and replay option
 
   function createGrid() {
     const newGrid = [];
@@ -283,13 +281,24 @@ export default function App() {
             };
           } else {
             return cell;
-          }
+          };
         })
-        );
-      // need a way to fire this function again if adjMines === 0
+      );
+      if (adjMines === 0) {
+        for (const cell in surroundingCells) {
+          const thisCoord = {
+            x: surroundingCells[cell].coordinates.x,
+            y: surroundingCells[cell].coordinates.y
+          }
+          const surrounding = getSurroundingCells(thisCoord);
+          const adjM = checkSurroundingCells(surrounding);
+          grid[thisCoord.y][thisCoord.x].hasBeenClicked = true;
+          grid[thisCoord.y][thisCoord.x].adjacentMines = adjM;
+        }
+      }
       return newGrid;
     };
-
+    
   function placeFlag(coords) {
     return grid.map((array, y) => 
       array.map((cell, x) => {
@@ -306,6 +315,8 @@ export default function App() {
   }
 
   return (
+    <>
+    <Header />
     <main>
       { 
       !play ?
@@ -341,5 +352,6 @@ export default function App() {
         play again?
       </button>}
     </main>
+    </>
   );
 }

@@ -1,10 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap');
+
+*,
+::after,
+::before {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Opens Sans', sans-serif;
+    background: rgb(184, 219, 219);
+}
+
+header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem 0;
+    background:rgb(93, 185, 185);
+}
+
+header h1 {
+    font-size: 3rem;
+}
+
+header p {
+    font-size: 1.2rem;
+}
+
 main {
     display: grid;
     place-items: center;
     gap: 2rem;
-    margin-top: 2rem;
+    padding-top: 2rem;
 }
-
 .game-container {
     display: grid;
     grid-template-columns: repeat(20, 1.25rem);
