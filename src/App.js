@@ -87,8 +87,12 @@ export default function App() {
         setGameOver(true);
         return;
       };
-      const newGrid = runSweeper(coords);
-      setGrid(newGrid);
+      const setup = runSweeper(coords);
+      console.log(setup);
+      setGrid(setup.newGrid);
+      if (setup.adjMines === 0) {
+        cascadeSweep(setup.surroundingCells);
+      }
     }
   }
 
@@ -271,7 +275,6 @@ export default function App() {
     const newGrid = grid.map((array, y) =>
         array.map((cell, x) => {
           if (y === coords.y && x === coords.x) {
-            console.log(coords);
             surroundingCells = getSurroundingCells(coords);
             adjMines = checkSurroundingCells(surroundingCells);
             return {
@@ -284,19 +287,11 @@ export default function App() {
           };
         })
       );
-      if (adjMines === 0) {
-        for (const cell in surroundingCells) {
-          const thisCoord = {
-            x: surroundingCells[cell].coordinates.x,
-            y: surroundingCells[cell].coordinates.y
-          }
-          const surrounding = getSurroundingCells(thisCoord);
-          const adjM = checkSurroundingCells(surrounding);
-          grid[thisCoord.y][thisCoord.x].hasBeenClicked = true;
-          grid[thisCoord.y][thisCoord.x].adjacentMines = adjM;
-        }
-      }
-      return newGrid;
+      return {
+        adjMines,
+        surroundingCells,
+        newGrid
+      };
     };
     
   function placeFlag(coords) {
@@ -313,6 +308,26 @@ export default function App() {
       })
     )
   }
+
+  function cascadeSweep(surroundingCells) {
+    for (const cell in surroundingCells) {
+      const thisCoord = {
+        ...surroundingCells[cell].coordinates
+      }
+      const surrounding = getSurroundingCells(thisCoord);
+      const adjM = checkSurroundingCells(surrounding);
+      setGrid(prevGrid => {
+        const newGrid = [...prevGrid];
+        newGrid[thisCoord.y][thisCoord.x].hasBeenClicked = true;
+        newGrid[thisCoord.y][thisCoord.x].adjacentMines = adjM;
+        return newGrid;
+      });
+      // if (adjM === 0 && grid[thisCoord.y][thisCoord.x].hasBeenClicked) {
+      //   // console.log(grid[thisCoord.y][thisCoord.x]);
+      //   cascadeSweep(surrounding);
+      // }
+    }
+}
 
   return (
     <>

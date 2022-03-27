@@ -25,10 +25,12 @@ header {
 
 header h1 {
     font-size: 3rem;
+    text-shadow: 0px 0px 5px rgb(248, 223, 176);
 }
 
 header p {
     font-size: 1.2rem;
+    text-shadow: 0px 0px 2px rgb(248, 223, 176);
 }
 
 main {
