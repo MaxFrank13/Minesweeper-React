@@ -27,8 +27,6 @@ Anytime a cell's content needs to be modified, the state of the grid is set usin
 
 The grid is created using a 2D array which allows for an intuitive development experience. Each index of that 2D array corresponds to a coordinate for that cell. For example, the top-left-most cell is at `grid[0][0]`, where one cell to the right of that would be `grid[0][1]` and one down would be `grid[1][0]`. In other words, the grid operates on an inverted y-axis, similar to how a web page is laid out (i.e. CSS `position` property).
 
-![Screenshot of game in progress](https://github.com/MaxFrank13/Minesweeper-React/blob/main/public/app-photos/game-inprogress.png)
-
 ## Future development
 
 This app is still in development stage as there are a few features I still want to add. One of which is the ability to cascade the sweep so that all cells surrounding a '0' are revealed instead of just the ones surrounding the click. Another is adding a backend to keep track of high scores and perhaps add a log in feature to keep track of a user's play history. With this backend, a forum/comment/messaging system could also be added.
