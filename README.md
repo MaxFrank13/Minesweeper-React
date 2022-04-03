@@ -5,6 +5,7 @@
 Minesweeper game built using React. A nice way to experiment and get familiar with state changes as well as honing JavaScript fundamentals.
 
 [Video Demonstration](https://drive.google.com/file/d/1MHHU5kG5mO8EE_K-7O9qVwJaQRWfk2cf/view)
+
 [Play Minesweeper!](https://aqueous-tundra-18749.herokuapp.com/)
 
 ![Screenshot of Home screen](https://github.com/MaxFrank13/Minesweeper-React/blob/main/public/app-photos/home-screen.png)
