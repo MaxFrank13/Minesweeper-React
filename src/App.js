@@ -4,11 +4,32 @@ import { nanoid } from "nanoid";
 import Cell from "./components/Cell";
 import Interface from "./components/Interface";
 import Header from './components/Header';
+import Confetti from 'react-confetti'
 
 export default function App() {
   const [grid, setGrid] = useState([]);
   const [play, setPlay] = useState(false);
   const [gameOver, setGameOver] = useState(false);
+  const [win, setWin] = useState(false);
+
+  function checkForWin() {
+    if (win) {
+      return win;
+    }
+    let count = 0;
+    grid.forEach(row => {
+      row.forEach(cell => {
+        if (cell.hasBeenClicked) {
+          count++;
+        }
+      });
+    });
+    console.log(count);
+    if (count === 340) {
+      setWin(true);
+    }
+    return win;
+  };
 
   function createGrid() {
     const newGrid = [];
@@ -88,7 +109,7 @@ export default function App() {
         return;
       };
       const setup = runSweeper(coords);
-      console.log(setup);
+
       setGrid(setup.newGrid);
       if (setup.adjMines === 0) {
         cascadeSweep(setup.surroundingCells);
@@ -359,13 +380,24 @@ export default function App() {
         }
       </section>
       }
+      {checkForWin() &&
+      <>
+        <Confetti />
+        <button 
+          className="btn"
+          onClick={createMap}
+        >
+          You won! Play again?
+        </button>
+      </>}
       {gameOver &&
-      <button 
-        className="btn"
-        onClick={createMap}
-      >
-        play again?
-      </button>}
+          <button
+            className="btn"
+            onClick={createMap}
+          >
+            Oh no! You lost! Play again?
+          </button>
+      }
     </main>
     </>
   );
