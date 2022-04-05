@@ -46,7 +46,8 @@ export default function App() {
             x: i,
             y: j,
           },
-          flagPlaced: false
+          flagPlaced: false,
+          swept: false
         });
       }
       newGrid.push(newRow);
@@ -110,10 +111,13 @@ export default function App() {
       };
       const setup = runSweeper(coords);
 
-      setGrid(setup.newGrid);
       if (setup.adjMines === 0) {
+        console.log(setup);
         cascadeSweep(setup.surroundingCells);
+        console.log(setup.newGrid[coords.y][coords.x]);
+        return;
       }
+      setGrid(setup.newGrid);
     }
   }
 
@@ -275,16 +279,16 @@ export default function App() {
   function checkForMine(coords) {
     if (grid[coords.y][coords.x].isMine) {
       return grid.map((array, y) => 
-      array.map((cell, x) => {
-        if (y === coords.y && x === coords.x) {
-          return {
-            ...cell,
-            hasBeenClicked: true
-          };
-        } else {
-          return cell;
-        }
-      })
+        array.map((cell, x) => {
+          if (y === coords.y && x === coords.x) {
+            return {
+              ...cell,
+              hasBeenClicked: true
+            };
+          } else {
+            return cell;
+          }
+        })
     )
   };
     return false;
@@ -331,23 +335,22 @@ export default function App() {
   }
 
   function cascadeSweep(surroundingCells) {
+    const newGrid = [...grid];
     for (const cell in surroundingCells) {
       const thisCoord = {
         ...surroundingCells[cell].coordinates
       }
       const surrounding = getSurroundingCells(thisCoord);
       const adjM = checkSurroundingCells(surrounding);
-      setGrid(prevGrid => {
-        const newGrid = [...prevGrid];
-        newGrid[thisCoord.y][thisCoord.x].hasBeenClicked = true;
-        newGrid[thisCoord.y][thisCoord.x].adjacentMines = adjM;
-        return newGrid;
-      });
-      // if (adjM === 0 && grid[thisCoord.y][thisCoord.x].hasBeenClicked) {
-      //   // console.log(grid[thisCoord.y][thisCoord.x]);
-      //   cascadeSweep(surrounding);
-      // }
+      newGrid[thisCoord.y][thisCoord.x].hasBeenClicked = true;
+      newGrid[thisCoord.y][thisCoord.x].adjacentMines = adjM;
+
+      if (adjM === 0 && !grid[thisCoord.y][thisCoord.x].swept) {
+        newGrid[thisCoord.y][thisCoord.x].swept = true;
+        cascadeSweep(surrounding);
+      }
     }
+    setGrid(newGrid);
 }
 
   return (
@@ -373,6 +376,7 @@ export default function App() {
                     isMine={cell.isMine}
                     adjacentMines={cell.adjacentMines}
                     flagPlaced={cell.flagPlaced}
+                    swept={cell.swept}
                   />
                 );
               })
