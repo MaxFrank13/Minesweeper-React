@@ -32,7 +32,6 @@ The grid is created using a 2D array which allows for an intuitive development e
 
 ## Future development
 
-This app is still in development stage as there are a few features I still want to add. One of which is the ability to cascade the sweep so that all cells surrounding a '0' are revealed instead of just the ones surrounding the click. Another is adding a backend to keep track of high scores and perhaps add a log in feature to keep track of a user's play history. With this backend, a forum/comment/messaging system could also be added.
-
+Adding a backend to keep track of high scores and perhaps add a log in feature to keep track of a user's play history. With this backend, a forum/comment/messaging system could also be added.
 
 This project was setup using `create-react-app`.
