@@ -24,7 +24,7 @@ export default function App() {
         }
       });
     });
-    console.log(count);
+
     if (count === 340) {
       setWin(true);
     }
@@ -98,7 +98,7 @@ export default function App() {
         });
       });
       // if shift-click, set a flag instead
-      if (event.shiftKey) {
+      if (event.ctrlKey) {
         const newGrid = placeFlag(coords);
         setGrid(newGrid);
         return;
@@ -278,60 +278,53 @@ export default function App() {
 
   function checkForMine(coords) {
     if (grid[coords.y][coords.x].isMine) {
-      return grid.map((array, y) => 
-        array.map((cell, x) => {
-          if (y === coords.y && x === coords.x) {
-            return {
-              ...cell,
-              hasBeenClicked: true
-            };
-          } else {
-            return cell;
-          }
-        })
-    )
-  };
+      const newGrid = [...grid];
+      newGrid[coords.y][coords.x].hasBeenClicked = true;
+      return newGrid;
+    };
     return false;
   }
 
   function runSweeper(coords) {
-    let adjMines;
-    let surroundingCells;
-    const newGrid = grid.map((array, y) =>
-        array.map((cell, x) => {
-          if (y === coords.y && x === coords.x) {
-            surroundingCells = getSurroundingCells(coords);
-            adjMines = checkSurroundingCells(surroundingCells);
-            return {
-              ...cell,
-              adjacentMines: adjMines,
-              hasBeenClicked: true,
-            };
-          } else {
-            return cell;
-          };
-        })
-      );
-      return {
+
+    const newGrid = [...grid];
+    const surroundingCells = getSurroundingCells(coords);
+    const adjMines = checkSurroundingCells(surroundingCells);
+    newGrid[coords.y][coords.x].adjacentMines = adjMines;
+    newGrid[coords.y][coords.x].hasBeenClicked = true;
+
+    return {
         adjMines,
         surroundingCells,
         newGrid
-      };
     };
+  };
+    // const newGrid = grid.map((array, y) =>
+    //     array.map((cell, x) => {
+    //       if (y === coords.y && x === coords.x) {
+    //         surroundingCells = getSurroundingCells(coords);
+    //         adjMines = checkSurroundingCells(surroundingCells);
+    //         return {
+    //           ...cell,
+    //           adjacentMines: adjMines,
+    //           hasBeenClicked: true,
+    //         };
+    //       } else {
+    //         return cell;
+    //       };
+    //     })
+    //   );
+    //   return {
+    //     adjMines,
+    //     surroundingCells,
+    //     newGrid
+    //   };
+    // };
     
   function placeFlag(coords) {
-    return grid.map((array, y) => 
-      array.map((cell, x) => {
-        if (y === coords.y && x === coords.x) {
-          return {
-            ...cell,
-            flagPlaced: !cell.flagPlaced
-          };
-        } else {
-          return cell;
-        }
-      })
-    )
+    const newGrid = [...grid];
+    newGrid[coords.y][coords.x].flagPlaced = true;
+    return newGrid;
   }
 
   function cascadeSweep(surroundingCells) {

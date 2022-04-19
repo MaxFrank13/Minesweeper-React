@@ -5,7 +5,7 @@ export default function Header() {
         <header>
             <h1>Minesweeper</h1>
             <p>See if you can sweep all the mines without touching one!</p>
-            <p>Use shift-click to set a flag 🚩</p>
+            <p>Use CTRL-click to set a flag 🚩</p>
         </header>
     )
 }
