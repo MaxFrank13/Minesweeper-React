@@ -1,10 +1,10 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { nanoid } from "nanoid";
+import Confetti from 'react-confetti'
 import Cell from "./components/Cell";
 import Interface from "./components/Interface";
 import Header from './components/Header';
-import Confetti from 'react-confetti'
+import LoseModal from "./components/LoseModal";
 
 export default function App() {
   const [grid, setGrid] = useState([]);
@@ -80,7 +80,8 @@ export default function App() {
     );
   }
 
-  function createMap() {
+  function setNewMap() {
+    setWin(false);
     setPlay(true);
     setGameOver(false)
     setGrid(createGrid());
@@ -91,13 +92,13 @@ export default function App() {
       const coords = {};
       grid.forEach((array, y) => {
         array.forEach((cell, x) => {
-          if (cell.cellNum == event.target.dataset.id) {
+          if (cell.cellNum.toString() === event.target.dataset.id) {
             coords.x = x;
             coords.y = y;
           }
         });
       });
-      // if shift-click, set a flag instead
+      // if control-click, set a flag instead
       if (event.ctrlKey) {
         const newGrid = placeFlag(coords);
         setGrid(newGrid);
@@ -299,31 +300,14 @@ export default function App() {
         newGrid
     };
   };
-    // const newGrid = grid.map((array, y) =>
-    //     array.map((cell, x) => {
-    //       if (y === coords.y && x === coords.x) {
-    //         surroundingCells = getSurroundingCells(coords);
-    //         adjMines = checkSurroundingCells(surroundingCells);
-    //         return {
-    //           ...cell,
-    //           adjacentMines: adjMines,
-    //           hasBeenClicked: true,
-    //         };
-    //       } else {
-    //         return cell;
-    //       };
-    //     })
-    //   );
-    //   return {
-    //     adjMines,
-    //     surroundingCells,
-    //     newGrid
-    //   };
-    // };
     
   function placeFlag(coords) {
     const newGrid = [...grid];
-    newGrid[coords.y][coords.x].flagPlaced = true;
+    const cell = newGrid[coords.y][coords.x];
+    if (cell.hasBeenClicked && !cell.flagPlaced) {
+      return newGrid;
+    }
+    cell.flagPlaced = !cell.flagPlaced;
     return newGrid;
   }
 
@@ -348,54 +332,54 @@ export default function App() {
 
   return (
     <>
-    <Header />
-    <main>
-      { 
-      !play ?
-      <Interface
-        handleClick={createMap}
+      <Header
+        setNewMap={setNewMap}
       />
-      :
-      <section className="game-container">
-        {grid.map((item) =>
-              item.map((cell) => {
-                return (
-                  <Cell
-                    key={cell.id}
-                    cellNum={cell.cellNum}
-                    type={cell.type}
-                    clicked={cell.hasBeenClicked}
-                    handleClick={cellClickHandle}
-                    isMine={cell.isMine}
-                    adjacentMines={cell.adjacentMines}
-                    flagPlaced={cell.flagPlaced}
-                    swept={cell.swept}
-                  />
-                );
-              })
-            )
+      <main>
+      { 
+        !play ?
+        <Interface
+          handleClick={setNewMap}
+        />
+        :
+        <section className="game-container">
+          {grid.map((item) =>
+                item.map((cell) => {
+                  return (
+                    <Cell
+                      key={cell.id}
+                      cellNum={cell.cellNum}
+                      type={cell.type}
+                      clicked={cell.hasBeenClicked}
+                      handleClick={cellClickHandle}
+                      isMine={cell.isMine}
+                      adjacentMines={cell.adjacentMines}
+                      flagPlaced={cell.flagPlaced}
+                      swept={cell.swept}
+                    />
+                  );
+                })
+              )
+          }
+        </section>
         }
-      </section>
-      }
-      {checkForWin() &&
-      <>
-        <Confetti />
-        <button 
-          className="btn"
-          onClick={createMap}
-        >
-          You won! Play again?
-        </button>
-      </>}
-      {gameOver &&
-          <button
+        {checkForWin() &&
+        <>
+          <Confetti />
+          <button 
             className="btn"
-            onClick={createMap}
+            onClick={setNewMap}
           >
-            Oh no! You lost! Play again?
+            You won! Play again?
           </button>
-      }
-    </main>
+        </>}
+        {gameOver &&
+            <LoseModal
+              setNewMap={setNewMap}
+              closeModal={() => setGameOver(false)}
+            />
+        }
+      </main>
     </>
   );
 }

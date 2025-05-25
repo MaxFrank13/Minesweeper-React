@@ -7,11 +7,14 @@ export default function Cell(props) {
     }
     return (
         <section onClick={props.handleClick} data-id={props.cellNum} className="cell"  style={styles}>
+            {}
             {
             props.clicked && props.isMine ?
-            "💥"
-            :
+            "💥" :
             props.clicked && props.adjacentMines
+            }
+            {
+              props.flagPlaced && !props.clicked && "🚩"
             }
         </section>
     )

@@ -6,7 +6,7 @@ import React from 'react';
 
 export default function Interface(props) {
     return (
-        <button 
+      <button 
         className="btn" 
         onClick={props.handleClick}
       >
